@@ -1,17 +1,12 @@
 version: '2'
 services:
+    # PostgreSQL
     db:
         image: postgres
-    django:
-        build: .
-        working_dir: /code/twitterautoreplybot
-        command: /usr/local/bin/gunicorn twitterautoreplybot.wsgi:application -w 2 -b :8000
-        volumes:
-            - .:/code
-        expose:
-            - "8000"
-        depends_on:
-            - db
+    # Redis
+    redis:
+        image: redis
+    # Nginx
     nginx:
         build: ./nginx
         ports:
@@ -22,3 +17,31 @@ services:
             - django
         links:
             - django
+    # Main web project
+    django:
+        build: .
+        working_dir: /code/twitterautoreplybot
+        command: /usr/local/bin/gunicorn twitterautoreplybot.wsgi:application -w 2 -b :8000
+        volumes:
+            - .:/code
+        expose:
+            - "8000"
+        depends_on:
+            - db
+            - redis
+    # Python RQ daemon
+    rqworker:
+        build: .
+        working_dir: /code/twitterautoreplybot
+        command: python manage.py rqworker high default low
+        links:
+            - db
+            - redis
+    # Python RQ scheduler
+    rqscheduler:
+        build: .
+        working_dir: /code/twitterautoreplybot
+        command: python manage.py rqscheduler
+        links:
+            - db
+            - redis
