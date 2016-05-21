@@ -1,0 +1,19 @@
+{% extends 'main/campaign_form.html' %}
+{% load i18n %}
+{% load bootstrap3 %}
+{% load widget_tweaks %}
+{% load staticfiles %}
+
+{% block page_title %}
+    {% blocktrans with campaignName=campaign.name %}
+        Edit "{{ campaignName }}"
+    {% endblocktrans %}
+{% endblock %}
+
+{% block subbreadcrumb %}
+    <li class="active"><i class="fa fa-feed"></i> {% blocktrans with campaignName=campaign.name %}Edit "{{ campaignName }}"{% endblocktrans %}</li>
+{% endblock %}
+
+{% block submit_button %}
+    <button type="submit" class="btn btn-lg btn-block btn-primary">{% trans "Edit campaign" %}</button>
+{% endblock %}

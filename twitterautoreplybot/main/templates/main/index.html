@@ -1,0 +1,33 @@
+{% extends 'main/layout.html' %}
+{% load i18n %}
+
+{% block page_title %}
+    {% trans "Dashboard" %}
+{% endblock %}
+
+{% block breadcrumb %}
+    <li class="active"><i class="fa fa-dashboard"></i> {% trans "Dashboard" %}</li>
+{% endblock %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-md-6">
+            <div class="info-box">
+                <span class="info-box-icon bg-aqua"><i class="fa fa-cogs"></i></span>
+                <div class="info-box-content">
+                    <span class="info-box-text">{% trans "Tweets seen" %}</span>
+                    <span class="info-box-number">{{ nbTweets }}</span>
+                </div><!-- /.info-box-content -->
+            </div><!-- /.info-box -->
+        </div><!-- /.col -->
+        <div class="col-md-6">
+            <div class="info-box">
+                <span class="info-box-icon bg-aqua"><i class="fa fa-reply"></i></span>
+                <div class="info-box-content">
+                    <span class="info-box-text">{% trans "Tweets replied" %}</span>
+                    <span class="info-box-number">{{ nbRepliedTweets }}</span>
+                </div><!-- /.info-box-content -->
+            </div><!-- /.info-box -->
+        </div><!-- /.col -->
+    </div>
+{% endblock %}

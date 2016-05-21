@@ -1,0 +1,99 @@
+{% extends 'main/layout.html' %}
+{% load i18n %}
+{% load bootstrap3 %}
+{% load widget_tweaks %}
+{% load staticfiles %}
+
+{% block page_title %}
+    {% trans "Create campaign" %}
+{% endblock %}
+
+{% block breadcrumb %}
+    {{ block.super }}
+    {% block subbreadcrumb %}
+        <li class="active"><i class="fa fa-feed"></i> {% trans "Create campaign" %}</li>
+    {% endblock %}
+{% endblock %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-md-12">
+            <form action="" method="post">
+                {% csrf_token %}
+                {% bootstrap_field form.name size="large" show_label=False %}
+                <div class="box box-info">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">{% trans "Queries" %}</h3>
+                    </div>         
+                    <div class="box-body no-padding">                        
+                        {% for form in inlines %}
+                            {{ form.management_form }}
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th style="width:60%">{% trans "Query" %}</th>
+                                        <th style="width:15%">{% trans "Magic word" %}</th>
+                                        <th style="width:15%">{% trans "Nb. images req." %}</th>
+                                        <th style="width:5%">{% trans "Picture" %}</th>
+                                        <th>{% trans "Delete" %}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for query_set in form %}
+                                        <tr id="inline-{{ form.prefix }}">
+                                            {{ query_set.id }}
+                                            <td>{{ query_set.query|attr:"class:form-control" }}</td>
+                                            <td>{{ query_set.correspondingSentence|attr:"class:form-control" }}</td>
+                                            <td>{{ query_set.requiredNumberOfImages|attr:"class:form-control" }}</td>
+                                            <td class="text-center"><div class="checkbox">{{ query_set.answerWithImage }}<label for="{{ query_set.answerWithImage.auto_id }}"></label></div></td>
+                                            <td class="text-center">{% if query_set.instance.pk %}{{ form.DELETE }}{% endif %}</td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="box box-success">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">{% trans "Answer sentence" %}</h3>
+                    </div>
+                    <div class="box-body">
+                        <div class="callout callout-info">
+                            <h4>{% trans "Syntax" %}</h4>
+                            <p>{% blocktrans %}To use the Twitter username, type :{% endblocktrans %}</p>
+                            <pre>%twitterUsername%</pre>
+                            <p>{% blocktrans %}To use the Tweet identifier, type :{% endblocktrans %}</p>
+                            <pre>%tweetId%</pre>
+                            <p>{% blocktrans %}To create a set of words picked at random, type :{% endblocktrans %}</p>
+                            <pre>[word1|word2|word3]</pre>
+                            <p>{% blocktrans %}To use the magic word from the query, type :{% endblocktrans %}</p>
+                            <pre>%magicWord%</pre>
+                        </div>
+                        {% bootstrap_field form.answerSentence size="large" show_label=False %}
+                    </div>
+                </div>
+                {% block submit_button %}
+                    <button type="submit" class="btn btn-lg btn-block btn-primary">{% trans "Create campaign" %}</button>
+                {% endblock %}
+            </form>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ block.super }}
+    <script src="{% static 'main/js/jquery.formset.min.js' %}"></script>
+    <script type="text/javascript">
+        {% for form in inlines %}
+            $(function() {
+                $("#inline-{{ form.prefix }}").formset({
+                    prefix: "{{ form.prefix }}",
+                    addText: "{% trans 'Add query' %}",
+                    addCssClass: "add-row btn btn-primary",
+                    deleteText: "<i class='fa fa-trash-o'></i>"
+                })
+            })
+        {% endfor %}
+    </script>
+{% endblock %}

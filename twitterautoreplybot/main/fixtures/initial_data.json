@@ -1,0 +1,26 @@
+[
+    {
+        "model": "main.Action",
+        "pk": 1,
+        "fields":
+        {
+            "type": "replied"
+        }
+    },
+    {
+        "model": "main.Action",
+        "pk": 2,
+        "fields":
+        {
+            "type": "wrong-image-number"
+        }
+    },
+    {
+        "model": "main.Action",
+        "pk": 3,
+        "fields":
+        {
+            "type": "unknown"
+        }
+    }
+]

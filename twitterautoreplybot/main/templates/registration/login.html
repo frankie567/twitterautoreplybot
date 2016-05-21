@@ -1,0 +1,27 @@
+{% extends "main/layout.html" %}
+{% load i18n %}
+{% load bootstrap3 %}
+
+{% block all_content %}
+<body class="hold-transition login-page">
+    <div class="login-box">
+        <div class="login-logo">
+            <a href="../../index2.html"><b>{% trans "Bipul" %}</b></a>
+        </div><!-- /.login-logo -->
+        <div class="login-box-body">
+            <form action="{% url 'django.contrib.auth.views.login' %}" method="post">
+                {% csrf_token %}
+                {% bootstrap_form form %}
+                <div class="row">
+                    <div class="col-xs-12">
+                        <button type="submit" class="btn btn-primary btn-block btn-flat">{% trans "Sign in" %}</button>
+                        <input type="hidden" name="next" value="{{ next }}" />
+                    </div><!-- /.col -->
+                </div>
+            </form>
+            <a href="{% url 'password_reset' %}">I forgot my password</a><br>
+            <a href="register.html" class="text-center">Register a new membership</a>
+        </div><!-- /.login-box-body -->
+    </div><!-- /.login-box -->
+</body>
+{% endblock %}

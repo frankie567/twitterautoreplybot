@@ -1,0 +1,203 @@
+{% extends 'main/layout.html' %}
+{% load i18n %}
+{% load staticfiles %}
+
+{% block page_title %}
+    {{ campaign.name }}
+{% endblock %}
+
+{% block breadcrumb %}
+    {{ block.super }}
+    <li class="active"><i class="fa fa-feed"></i> {{ campaign.name }}</li>
+{% endblock %}
+
+{% block body %}
+    {# Infos widget #}
+    <div class="row">
+        <div class="col-md-6">
+            {% with campaign.tweet_actions.count as tweetsCount %}
+                <div class="info-box bg-aqua">
+                    <span class="info-box-icon"><i class="fa fa-twitter"></i></span>
+
+                    {% if tweetsCount > 0 %}
+                        <div class="info-box-content">
+                            <span class="info-box-text">{% trans "Replies" %}</span>
+                            <span class="info-box-number">{{ campaign.nbTweetsReplied }}</span>
+                
+                            {% widthratio campaign.nbTweetsReplied tweetsCount 100 as percentage %}
+                            {% widthratio campaign.nbTweetsClicked campaign.nbTweetsReplied 100 as percentageClicked %}
+                            {% widthratio campaign.nbTweetsPrefrCreated campaign.nbTweetsReplied 100 as percentageCreated %}
+                            <div class="progress">
+                                <div class="progress-bar" style="width: {{ percentage }}%"></div>
+                            </div>
+                            <span class="progress-description"> 
+                                {% blocktrans %}
+                                    {{ percentage }}% of replies
+                                {% endblocktrans %}
+                                 - 
+                                {% blocktrans %}
+                                    {{ percentageClicked }}% of clicks
+                                {% endblocktrans %}
+                                 - 
+                                {% blocktrans %}
+                                    {{ percentageCreated }}% of creations
+                                {% endblocktrans %}
+                            </span>
+                        </div>
+                    {% else %}
+                        <div class="info-box-content">
+                            <span class="info-box-text">{% trans "No tweet processed yet" %}</span>
+                            <span class="info-box-number">&nbsp;</span>
+                
+                            <div class="progress">
+                                <div class="progress-bar" style="width: 0%"></div>
+                            </div>
+                            <span class="progress-description"> </span>
+                        </div>
+                    {% endif %}
+                    <!-- /.info-box-content -->
+                </div>
+            {% endwith %}
+        </div>
+        <div class="col-md-6">
+            <div class="info-box bg-{% if campaign.running %}green{% else %}yellow{% endif %}">
+                <span class="info-box-icon"><i class="fa fa-cog {% if campaign.running %}fa-spin{% endif %}"></i></span>
+
+                <div class="info-box-content">
+                    <span class="info-box-text">{% trans "Status" %}</span>
+                    <span class="info-box-number">
+                        {% if campaign.running %}
+                            {% trans "Running" %}
+                        {% else %}
+                            {% trans "Idle" %}
+                        {% endif %}
+                    </span>
+
+                    <div class="progress">
+                        <div class="progress-bar" style="width: 0%"></div>
+                    </div>
+                    <span class="progress-description">
+                        {% if campaign.lastRun %}
+                            {% blocktrans with lastRun=campaign.lastRun|date:"SHORT_DATETIME_FORMAT" %}
+                                Last run: {{ lastRun }}
+                            {% endblocktrans %}
+                        {% else %}
+                            {% trans "Never run" %}
+                        {% endif %}
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    {# Action buttons #}
+    <div class="row" style="margin-bottom:10px">
+        <div class="col-xs-6">
+            <a href="{% url 'main:CampaignUpdate' pk=campaign.pk %}" class="btn btn-block btn-primary"><i class="fa fa-edit"></i> {% trans "Edit campaign" %}</a>
+        </div>
+        <div class="col-xs-6">
+            {% if not campaign.jobId %}
+                <a href="{% url 'main:CampaignSchedule' pk=campaign.pk %}" class="btn btn-block btn-success"><i class="fa fa-clock-o"></i> {% trans "Enable campaign" %}</a>
+            {% else %}
+                <a href="{% url 'main:CampaignUnschedule' pk=campaign.pk %}" class="btn btn-block btn-danger"><i class="fa fa-ban"></i> {% trans "Disable campaign" %}</a>
+            {% endif %}
+        </div>
+    </div>
+    
+    {# Sentence recall #}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box box-warning">
+                <div class="box-header with-border">
+                    <h3 class="box-title">{% trans "Answer sentence" %}</h3>
+                </div>
+                <div class="box-body">
+                    <pre>{{ campaign.answerSentence }}</pre>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    {# Queries #}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box box-warning">
+                <div class="box-header with-border">
+                    <h3 class="box-title">{% trans "Queries" %}</h3>
+                </div>
+                <div class="box-body table-responsive no-padding">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th style="width:75%">{% trans "Query" %}</th>
+                                <th class="text-center">{% trans "Picture" %}</th>
+                                <th class="text-center">{% trans "Seen" %}</th>
+                                <th class="text-center">{% trans "Replied" %}</th>
+                                <th class="text-center">{% trans "Clicked" %}</th>
+                                <th class="text-center">{% trans "Created" %}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for query in campaign.queries.all %}
+                                <tr>
+                                    <td>
+                                        {{ query.query }}
+                                        {% if query.requiredNumberOfImages != None %}
+                                            {% blocktrans count counter=query.requiredNumberOfImages %}
+                                                ({{ counter }} image)
+                                                {% plural %}
+                                                ({{ counter }} images)
+                                            {% endblocktrans %}
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-center">{% if query.answerWithImage %}<i class="fa fa-check"></i>{% else %}<i class="fa fa-remove"></i>{% endif %}</td>
+                                    <td class="text-center"><span class="badge">{{ query.nbTweetsSeen }}</span></td>
+                                    <td class="text-center"><span class="badge">{{ query.nbTweetsReplied }}</span></td>
+                                    <td class="text-center"><span class="badge">{% widthratio query.nbTweetsClicked query.nbTweetsReplied 100 %}%</span></td>
+                                    <td class="text-center"><span class="badge">{% widthratio query.nbTweetsPrefrCreated query.nbTweetsReplied 100 %}%</span></td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    {# Preview of last replied tweets #}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box box-info">
+                <div class="box-header with-border">
+                    <h3 class="box-title">{% trans "Last replied tweets" %}</h3>
+                </div>
+                <div class="box-body table-responsive no-padding">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>{% trans "Id." %}</th>
+                                <th>{% trans "Message" %}</th>
+                                <th>{% trans "Query" %}</th>
+                                <th>{% trans "Clicked" %}</th>
+                                <th>{% trans "Created" %}</th>
+                                <th class="text-center">{% trans "View" %}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for tweetDetails in campaign.getTweetDetails %}
+                                <tr>
+                                    <td>{{ tweetDetails.id }}</td>
+                                    <td>{{ tweetDetails.message }}</td>
+                                    <td>{{ tweetDetails.query.query }}</td>
+                                    <td class="text-center"><i class="fa fa-{% if tweetDetails.clicked %}check{% else %}remove{% endif %}"></i></td>
+                                    <td class="text-center"><i class="fa fa-{% if tweetDetails.prefrCreated %}check{% else %}remove{% endif %}"></i></td>
+                                    <td class="text-center"><a href="https://twitter.com/statuses/{{ tweetDetails.id }}" target="_blank" class="btn btn-xs btn-primary"><i class="fa fa-eye"></i> {% trans "View" %}</a></td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
