@@ -19,6 +19,7 @@ services:
             - django
     # Main web project
     django:
+        env_file: .env
         build: .
         working_dir: /code/twitterautoreplybot
         command: /usr/local/bin/gunicorn twitterautoreplybot.wsgi:application -w 2 -b :8000
@@ -31,6 +32,7 @@ services:
             - redis
     # Python RQ daemon
     rqworker:
+        env_file: .env
         build: .
         working_dir: /code/twitterautoreplybot
         command: python manage.py rqworker high default low
@@ -39,6 +41,7 @@ services:
             - redis
     # Python RQ scheduler
     rqscheduler:
+        env_file: .env
         build: .
         working_dir: /code/twitterautoreplybot
         command: python manage.py rqscheduler
