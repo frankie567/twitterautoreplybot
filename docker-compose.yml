@@ -2,13 +2,23 @@ version: '2'
 services:
     db:
         image: postgres
-    web:
+    django:
         build: .
         working_dir: /code/twitterautoreplybot
-        command: python manage.py runserver 0.0.0.0:8000
+        command: /usr/local/bin/gunicorn twitterautoreplybot.wsgi:application -w 2 -b :8000
         volumes:
             - .:/code
-        ports:
-            - "8000:8000"
+        expose:
+            - "8000"
         depends_on:
             - db
+    nginx:
+        build: ./nginx
+        ports:
+            - "80:80"
+        volumes:
+            - /www/static
+        volumes_from:
+            - django
+        links:
+            - django
