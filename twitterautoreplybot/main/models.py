@@ -1,8 +1,9 @@
 from django.db import models
 from django.core.urlresolvers import reverse
 from django.conf import settings
+from main.extras import Bitly
 
-import re, random, twitter, bitly_api
+import re, random, twitter
 
 # Create your models here.        
 class Campaign(models.Model):
@@ -48,11 +49,10 @@ class Campaign(models.Model):
         urls = re.findall(r'(https?://\S+)', toReturn)
         shortenedUrls = []
         if (len(urls) > 0):
-            bitly = bitly_api.Connection(settings.BITLY_LOGIN, settings.BITLY_API_KEY)
-            for url in urls:
-                shortenedUrl = bitly.shorten(url)
-                shortenedUrls.append(shortenedUrl["url"])
-                toReturn = toReturn.replace(url, shortenedUrl["url"])
+            bitly = Bitly.Bitly()
+            shortenedUrls = bitly.shorten_urls(urls)
+            for shortenedUrl in shortenedUrls:
+                toReturn = toReturn.replace(url, shortenedUrl)
         
         # Process word sets
         p = re.compile(ur'\[([^\]]+)\]')
