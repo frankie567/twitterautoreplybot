@@ -3,20 +3,27 @@ sudo: required
 language: python
 
 services:
-  - docker
+    - docker
+    
+env:
+  DOCKER_COMPOSE_VERSION: 1.7.1
   
 before_install:
-  - docker build -t frankie567/twitterautoreplybot .
-  
+    # Replace default docker-compose (https://docs.travis-ci.com/user/docker/)
+    - sudo rm /usr/local/bin/docker-compose
+    - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
+    - chmod +x docker-compose
+    - sudo mv docker-compose /usr/local/bin
+    - docker build -t frankie567/twitterautoreplybot .
+    
 python:
-  - "2.6"
-  - "2.7"
-  - "3.2"
-  - "3.3"
-  - "3.4"
-  - "3.5"
-  - "3.5-dev"
-  - "nightly"
+    - "2.6"
+    - "2.7"
+    - "3.2"
+    - "3.3"
+    - "3.4"
+    - "3.5"
+    - "3.5-dev"
+    - "nightly"
 
-# command to run tests
 script: docker-compose run django python manage.py test
