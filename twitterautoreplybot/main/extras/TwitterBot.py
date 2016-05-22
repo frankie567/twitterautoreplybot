@@ -42,7 +42,7 @@ def twitterBot(campaignPk):
             tweetId = str(tweet.id)
             if (TweetAction.objects.filter(campaign__pk__exact=campaign.pk, tweet__tweet_id__exact=tweetId).count() == 0):
                 # Get medias if needed
-                if (query.requiredNumberOfImages != None or query.answerWithImage == True):
+                if (query.requiredNumberOfImages != None):
                     medias = getTweetMedias(twitterClient, tweetId)
                     # Can't access the medias
                     if (medias == False):
@@ -58,13 +58,9 @@ def twitterBot(campaignPk):
                         tweetAction.campaign = campaign
                         tweetAction.save()
                         continue
-                    # Generate image if needed
-                    if (query.answerWithImage == True):
-                        imageGenerator = GeneratePreviewImage.GeneratePreviewImage()
-                        imageGenerator.generatePreviewImage(medias[0]["media_url"], medias[1]["media_url"])
                 # Answer tweet
                 answerSentence, shortenedUrls = campaign.generateAnswerSentence(tweet.user.screen_name, tweetId, query.correspondingSentence)
-                if (curlTwitter.twitterTweet(answerSentence, tweetId, (settings.BASE_DIR + "/preview.jpg") if query.answerWithImage else None) == True):
+                if (curlTwitter.twitterTweet(answerSentence, tweetId, None) == True):
                     # Add it to database
                     tweetDB, created = Tweet.objects.get_or_create(tweet_id=tweetId)
                     tweetDB.save()

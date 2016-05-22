@@ -34,7 +34,6 @@
                                         <th style="width:60%">{% trans "Query" %}</th>
                                         <th style="width:15%">{% trans "Magic word" %}</th>
                                         <th style="width:15%">{% trans "Nb. images req." %}</th>
-                                        <th style="width:5%">{% trans "Picture" %}</th>
                                         <th>{% trans "Delete" %}</th>
                                     </tr>
                                 </thead>
@@ -45,7 +44,6 @@
                                             <td>{{ query_set.query|attr:"class:form-control" }}</td>
                                             <td>{{ query_set.correspondingSentence|attr:"class:form-control" }}</td>
                                             <td>{{ query_set.requiredNumberOfImages|attr:"class:form-control" }}</td>
-                                            <td class="text-center"><div class="checkbox">{{ query_set.answerWithImage }}<label for="{{ query_set.answerWithImage.auto_id }}"></label></div></td>
                                             <td class="text-center">{% if query_set.instance.pk %}{{ form.DELETE }}{% endif %}</td>
                                         </tr>
                                     {% endfor %}

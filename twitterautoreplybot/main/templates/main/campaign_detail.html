@@ -26,7 +26,6 @@
                 
                             {% widthratio campaign.nbTweetsReplied tweetsCount 100 as percentage %}
                             {% widthratio campaign.nbTweetsClicked campaign.nbTweetsReplied 100 as percentageClicked %}
-                            {% widthratio campaign.nbTweetsPrefrCreated campaign.nbTweetsReplied 100 as percentageCreated %}
                             <div class="progress">
                                 <div class="progress-bar" style="width: {{ percentage }}%"></div>
                             </div>
@@ -37,10 +36,6 @@
                                  - 
                                 {% blocktrans %}
                                     {{ percentageClicked }}% of clicks
-                                {% endblocktrans %}
-                                 - 
-                                {% blocktrans %}
-                                    {{ percentageCreated }}% of creations
                                 {% endblocktrans %}
                             </span>
                         </div>
@@ -130,11 +125,9 @@
                         <thead>
                             <tr>
                                 <th style="width:75%">{% trans "Query" %}</th>
-                                <th class="text-center">{% trans "Picture" %}</th>
                                 <th class="text-center">{% trans "Seen" %}</th>
                                 <th class="text-center">{% trans "Replied" %}</th>
                                 <th class="text-center">{% trans "Clicked" %}</th>
-                                <th class="text-center">{% trans "Created" %}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -142,19 +135,10 @@
                                 <tr>
                                     <td>
                                         {{ query.query }}
-                                        {% if query.requiredNumberOfImages != None %}
-                                            {% blocktrans count counter=query.requiredNumberOfImages %}
-                                                ({{ counter }} image)
-                                                {% plural %}
-                                                ({{ counter }} images)
-                                            {% endblocktrans %}
-                                        {% endif %}
                                     </td>
-                                    <td class="text-center">{% if query.answerWithImage %}<i class="fa fa-check"></i>{% else %}<i class="fa fa-remove"></i>{% endif %}</td>
                                     <td class="text-center"><span class="badge">{{ query.nbTweetsSeen }}</span></td>
                                     <td class="text-center"><span class="badge">{{ query.nbTweetsReplied }}</span></td>
                                     <td class="text-center"><span class="badge">{% widthratio query.nbTweetsClicked query.nbTweetsReplied 100 %}%</span></td>
-                                    <td class="text-center"><span class="badge">{% widthratio query.nbTweetsPrefrCreated query.nbTweetsReplied 100 %}%</span></td>
                                 </tr>
                             {% endfor %}
                         </tbody>
@@ -179,7 +163,6 @@
                                 <th>{% trans "Message" %}</th>
                                 <th>{% trans "Query" %}</th>
                                 <th>{% trans "Clicked" %}</th>
-                                <th>{% trans "Created" %}</th>
                                 <th class="text-center">{% trans "View" %}</th>
                             </tr>
                         </thead>
@@ -190,7 +173,6 @@
                                     <td>{{ tweetDetails.message }}</td>
                                     <td>{{ tweetDetails.query.query }}</td>
                                     <td class="text-center"><i class="fa fa-{% if tweetDetails.clicked %}check{% else %}remove{% endif %}"></i></td>
-                                    <td class="text-center"><i class="fa fa-{% if tweetDetails.prefrCreated %}check{% else %}remove{% endif %}"></i></td>
                                     <td class="text-center"><a href="https://twitter.com/statuses/{{ tweetDetails.id }}" target="_blank" class="btn btn-xs btn-primary"><i class="fa fa-eye"></i> {% trans "View" %}</a></td>
                                 </tr>
                             {% endfor %}

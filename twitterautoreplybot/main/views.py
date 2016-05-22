@@ -107,17 +107,17 @@ def CampaignUnschedule(request, pk):
     
     return redirect(campaign)
     
-def TweetActionReturn(request, tweet_id, action):
-    tweet = get_object_or_404(Tweet, tweet_id=tweet_id)
-    
-    tweetAction = tweet.tweet_actions.all()[0]
-    if (action == "clicked" and tweetAction.shortened_urls != None):
-        bitly = bitly_api.Connection(access_token = settings.BITLY_TOKEN)
-        if (bitly.link_clicks(tweetAction.getShortenedUrls()[0]) > 1):
-            tweetAction.clicked = True
-    elif (action == "created"):
-        tweetAction.prefrCreated = True
-    tweetAction.save()
-        
-    return JsonResponse({'status': 'ok'})
+# def TweetActionReturn(request, tweet_id, action):
+#     tweet = get_object_or_404(Tweet, tweet_id=tweet_id)
+#     
+#     tweetAction = tweet.tweet_actions.all()[0]
+#     if (action == "clicked" and tweetAction.shortened_urls != None):
+#         bitly = bitly_api.Connection(access_token = settings.BITLY_TOKEN)
+#         if (bitly.link_clicks(tweetAction.getShortenedUrls()[0]) > 1):
+#             tweetAction.clicked = True
+#     elif (action == "created"):
+#         tweetAction.prefrCreated = True
+#     tweetAction.save()
+#         
+#     return JsonResponse({'status': 'ok'})
     

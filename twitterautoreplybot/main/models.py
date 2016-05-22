@@ -17,8 +17,6 @@ class Campaign(models.Model):
         return self.tweet_actions.filter(action__type__exact="replied").count()
     def nbTweetsClicked(self):
         return self.tweet_actions.filter(clicked=True).count()
-    def nbTweetsPrefrCreated(self):
-        return self.tweet_actions.filter(prefrCreated=True).count()
         
     def getTweetDetails(self, limit=5):
         tweetActions = self.tweet_actions.filter(action__type__exact="replied").order_by('-pk')[:limit]
@@ -33,9 +31,9 @@ class Campaign(models.Model):
         for tweetAction in tweetActions:
             try:
                 tweet = twitterClient.GetStatus(id = tweetAction.tweet.tweet_id, include_entities = True)
-                tweetDetails.append({"id": tweet.id, "message": tweet.text, "query": tweetAction.query, "clicked": tweetAction.clicked, "prefrCreated": tweetAction.prefrCreated})
+                tweetDetails.append({"id": tweet.id, "message": tweet.text, "query": tweetAction.query, "clicked": tweetAction.clicked})
             except twitter.TwitterError:
-                tweetDetails.append({"id": tweet.id, "message": "-", "query": tweetAction.query, "clicked": tweetAction.clicked, "prefrCreated": tweetAction.prefrCreated})
+                tweetDetails.append({"id": tweet.id, "message": "-", "query": tweetAction.query, "clicked": tweetAction.clicked})
         
         return tweetDetails
     
@@ -76,7 +74,6 @@ class Query(models.Model):
     correspondingSentence = models.CharField(max_length=255)
     campaign = models.ForeignKey(Campaign, related_name="queries")
     requiredNumberOfImages = models.IntegerField(blank=True, null=True)
-    answerWithImage = models.BooleanField(default=False)
     
     def nbTweetsSeen(self):
         return Tweet.objects.filter(tweet_actions__query__pk__exact=self.pk).count()
@@ -84,8 +81,6 @@ class Query(models.Model):
         return Tweet.objects.filter(tweet_actions__query__pk__exact=self.pk, tweet_actions__action__type__exact="replied").count()
     def nbTweetsClicked(self):
         return Tweet.objects.filter(tweet_actions__query__pk__exact=self.pk, tweet_actions__clicked=True).count()
-    def nbTweetsPrefrCreated(self):
-        return Tweet.objects.filter(tweet_actions__query__pk__exact=self.pk, tweet_actions__prefrCreated=True).count()
     
     def __unicode__(self):
         return self.query
@@ -109,7 +104,6 @@ class TweetAction(models.Model):
     campaign = models.ForeignKey(Campaign, related_name="tweet_actions")
     shortened_urls = models.TextField(blank=True, null=True)
     clicked = models.BooleanField(default=False)
-    prefrCreated = models.BooleanField(default=False)
     
     def setShortenedUrls(self, shortenedUrls):
         self.shortened_urls = ','.join(shortenedUrls)
