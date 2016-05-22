@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>{% block title %}{% trans "Bipul" %}{% endblock %}</title>
+    <title>{% block title %}{% trans "Twitter Auto-Reply Bot" %}{% endblock %}</title>
     <!-- Tell the browser to be responsive to screen width -->
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     {% block stylesheets %}
@@ -27,9 +27,9 @@
         <!-- Logo -->
         <a href="../../index2.html" class="logo">
           <!-- mini logo for sidebar mini 50x50 pixels -->
-          <span class="logo-mini"><b>{% trans "B" %}</b></span>
+          <span class="logo-mini"><i class="fa fa-twitter"></i></span>
           <!-- logo for regular state and mobile devices -->
-          <span class="logo-lg"><b>{% trans "Bipul" %}</b></span>
+          <span class="logo-lg"><i class="fa fa-twitter"></i> <b>{% trans "Auto-Reply Bot" %}</b></span>
         </a>
         <!-- Header Navbar: style can be found in header.less -->
         <nav class="navbar navbar-static-top" role="navigation">
@@ -140,7 +140,7 @@
       </div><!-- /.content-wrapper -->
 
       <footer class="main-footer">
-        {% trans "The Twitter bot from India" %}
+        {% trans "A Twitter auto-reply bot written in Python with a Django web interface" %} - <a href="https://github.com/frankie567/twitterautoreplybot" target="_blank">{% trans "Official GitHub repository" %}</a>
       </footer>
     </div><!-- ./wrapper -->
   </body>
