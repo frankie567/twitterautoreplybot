@@ -6,9 +6,14 @@ services:
     - docker
     
 env:
-  DOCKER_COMPOSE_VERSION: 1.7.1
+    - DOCKER_VERSION=1.11.1
+    - DOCKER_COMPOSE_VERSION: 1.7.1
   
 before_install:
+    # list docker-engine versions
+    - apt-cache madison docker-engine
+    # upgrade docker-engine to specific version
+    - sudo apt-get -o Dpkg::Options::="--force-confnew" install -y docker-engine=${DOCKER_VERSION}
     # Replace default docker-compose (https://docs.travis-ci.com/user/docker/)
     - sudo rm /usr/local/bin/docker-compose
     - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
