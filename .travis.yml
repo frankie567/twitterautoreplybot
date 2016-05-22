@@ -24,6 +24,7 @@ before_install:
     # Build Docker image
     - docker build -t frankie567/twitterautoreplybot .
     - docker-compose up
+    
 python:
     - "2.6"
     - "2.7"
@@ -34,4 +35,7 @@ python:
     - "3.5-dev"
     - "nightly"
 
-script: docker-compose run django python manage.py test
+script: 
+    - docker version
+    - docker-compose version
+    - docker-compose run django python manage.py test
