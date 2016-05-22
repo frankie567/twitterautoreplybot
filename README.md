@@ -6,7 +6,7 @@ A simple bot that provides a clean web interface to configure and track auto-rep
 
 ## Warning about Twitter terms of service
 
-This kind of bot is **COMPLETELY FORBIDDEN** by Twitter terms of service. I cannot be held responsible for anything that would happen to you or your Twitter account.
+This kind of bot is **COMPLETELY FORBIDDEN** by Twitter terms of service. I cannot be held responsible for anything that could happen to you or your Twitter account.
 
 ## Installation
 
