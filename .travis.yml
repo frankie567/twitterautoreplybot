@@ -14,8 +14,10 @@ before_install:
     - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
     - chmod +x docker-compose
     - sudo mv docker-compose /usr/local/bin
+    # Setup .env file (more informations in the script)
+    - python travis_set_docker_env_file.py 
+    # Build Docker image
     - docker build -t frankie567/twitterautoreplybot .
-    
 python:
     - "2.6"
     - "2.7"
