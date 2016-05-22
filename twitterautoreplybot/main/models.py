@@ -51,8 +51,8 @@ class Campaign(models.Model):
         if (len(urls) > 0):
             bitly = Bitly.Bitly()
             shortenedUrls = bitly.shorten_urls(urls)
-            for shortenedUrl in shortenedUrls:
-                toReturn = toReturn.replace(url, shortenedUrl)
+            for index, url in enumerate(urls):
+                toReturn = toReturn.replace(url, shortenedUrls[index])
         
         # Process word sets
         p = re.compile(ur'\[([^\]]+)\]')

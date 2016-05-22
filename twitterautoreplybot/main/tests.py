@@ -41,13 +41,16 @@ class CampaignTestCase(TestCase):
     def setUp(self):
         Campaign.objects.create(
             name = "Test campaign",
-            answerSentence = "Username : %twitterUsername% / Magic word : %magicWord% / Tweet id : %tweetId%"
+            answerSentence = "Username : %twitterUsername% / Magic word : %magicWord% / Tweet id : %tweetId% / Random word : [cool|nice|wonderful|lol] / URL : http://www.francoisvoron.com"
         )
             
     def test_generateAnswerSentence(self):
         campaign_test = Campaign.objects.get(name = "Test campaign")
-        self.assertEqual(
-            campaign_test.generateAnswerSentence("TwitterUser", "1234", "MagicWord"),
-            ("Username : TwitterUser / Magic word : MagicWord / Tweet id : 1234", [])
-        )
-
+        answer_sentence = campaign_test.generateAnswerSentence("TwitterUser", "1234", "MagicWord")
+        
+        # Check if sentence result is as expected
+        answer_sentence_pattern = re.compile(ur'Username : TwitterUser \/ Magic word : MagicWord \/ Tweet id : 1234 \/ Random word : (cool|nice|wonderful|lol) \/ URL : http:\/\/bit\.ly\/[a-zA-Z0-9]+')
+        self.assertTrue(re.match(answer_sentence_pattern, answer_sentence[0]))
+        
+        # Check if we have a shortened URL
+        self.assertEqual(len(answer_sentence[1]), 1)
