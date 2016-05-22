@@ -7,7 +7,6 @@ services:
   
 before_install:
   - docker build -t frankie567/twitterautoreplybot .
-  - docker-compose up
   
 python:
   - "2.6"
