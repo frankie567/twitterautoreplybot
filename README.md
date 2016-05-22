@@ -1,4 +1,4 @@
-[![Docker Stars](https://img.shields.io/docker/stars/frankie567/twitterautoreplybot.svg?style=flat-square)](https://hub.docker.com/r/frankie567/twitterautoreplybot/) [![Docker Pulls](https://img.shields.io/docker/pulls/frankie567/twitterautoreplybot.svg?style=flat-square)](https://hub.docker.com/r/frankie567/twitterautoreplybot/)
+[![Docker Stars](https://img.shields.io/docker/stars/frankie567/twitterautoreplybot.svg?style=flat-square)](https://hub.docker.com/r/frankie567/twitterautoreplybot/) [![Docker Pulls](https://img.shields.io/docker/pulls/frankie567/twitterautoreplybot.svg?style=flat-square)](https://hub.docker.com/r/frankie567/twitterautoreplybot/) [![Travis](https://img.shields.io/travis/frankie567/twitterautoreplybot.svg?style=flat-square)](https://travis-ci.org/frankie567/twitterautoreplybot)
 
 # Twitter Auto-Reply Bot
 
