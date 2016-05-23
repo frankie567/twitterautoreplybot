@@ -1,7 +1,7 @@
 from django.test import TestCase
 
 from main.models import Campaign
-from main.extras import Bitly
+from main.extras import Bitly, CurlTwitter
 
 import re
 
@@ -35,6 +35,15 @@ class BitlyTestCase(TestCase):
         bitly_url_pattern = re.compile(ur'http:\/\/bit\.ly\/[a-zA-Z0-9]+')
         for shortened_url in shortened_urls:    
             self.assertTrue(re.match(bitly_url_pattern, shortened_url))
+            
+# CurlTwitter service tests
+class CurlTwitterTestCase(TestCase):
+    def setUp(self):
+        self.curl_twitter = CurlTwitter.CurlTwitter()
+        
+    def test_twitterLogin(self):
+        # Check if cookie contains session
+        self.assertTrue("_twitter_sess" in self.curl_twitter.cookie.read())
 
 # Campaign model tests
 class CampaignTestCase(TestCase):

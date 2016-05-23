@@ -2,7 +2,8 @@
 
 from django.conf import settings
 
-import os, re, urllib, sys, tempfile
+import os, urllib, sys, tempfile
+from bs4 import BeautifulSoup
 
 class CurlTwitter:
 
@@ -13,12 +14,19 @@ class CurlTwitter:
         self.temporaryHTML = tempfile.NamedTemporaryFile()
         self.authenticityToken = ""
         self.twitterLogin()
+        
+    # Find the authencity token in HTML
+    def getAuthenticityToken(self, html):
+        parsed_html = BeautifulSoup(html, 'html.parser')
+        authenticity_token = parsed_html.find('input', {'name': 'authenticity_token'})
+        return authenticity_token['value']
 
     # Login to Twitter 
     def twitterLogin(self):
         os.system("curl 'https://mobile.twitter.com/session/new' -H 'accept-encoding: gzip, deflate, sdch' -H 'accept-language: fr-FR,fr;q=0.8,en;q=0.6' -H 'upgrade-insecure-requests: 1' -H 'user-agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36' -H 'accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8' -H 'authority: mobile.twitter.com' --compressed -c '"+self.cookie.name+"' -o "+self.temporaryHTML.name+" > /dev/null 2>&1")
         loginPageString = self.temporaryHTML.read()
-        self.authenticityToken = re.findall(ur'<input name=\"authenticity_token\" type=\"hidden\" value=\"([^"]+)\"\/>', loginPageString)[0]
+        self.authenticityToken = self.getAuthenticityToken(loginPageString)
+        
         os.system("curl https://mobile.twitter.com/sessions -H 'user-agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36' -H 'content-type: application/x-www-form-urlencoded' --data 'authenticity_token="+ self.authenticityToken +"&remember_me=1&wfa=1&redirect_after_login=%2F&session%5Busername_or_email%5D="+self.username+"&session%5Bpassword%5D="+self.password+"' --compressed -v -b '"+self.cookie.name+"' -c '"+self.cookie.name+"' -o "+self.temporaryHTML.name+" -L > /dev/null 2>&1")
     
     # Upload image
@@ -39,7 +47,7 @@ class CurlTwitter:
         tokenPage = tempfile.NamedTemporaryFile()
         os.system("curl 'https://twitter.com/' -H 'user-agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36' -H 'content-type: application/x-www-form-urlencoded' --compressed -b '"+self.cookie.name+"' -c '"+self.cookie.name+"' -v -L -o "+tokenPage.name+" > /dev/null 2>&1")
         composeTweetPageString = tokenPage.read()
-        self.authenticityToken = re.findall(ur'<input type=\"hidden\" id=\"authenticity_token\" name=\"authenticity_token\" value=\"([^"]+)\">', composeTweetPageString)[0]
+        self.authenticityToken = self.getAuthenticityToken(composeTweetPageString)
 
         # Prepare data
         data = "authenticity_token="+self.authenticityToken+"&is_permalink_page=false&place_id=&status="+urllib.quote(tweet.encode('utf-8'))+"&tagged_users=&in_reply_to_status_id="+replyStatusId
