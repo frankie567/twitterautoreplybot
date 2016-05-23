@@ -2,7 +2,7 @@
 
 from django.conf import settings
 
-import os, urllib, sys, tempfile
+import os, re, urllib, sys, tempfile
 from bs4 import BeautifulSoup
 
 class CurlTwitter:
